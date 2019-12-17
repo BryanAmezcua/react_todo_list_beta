@@ -1,40 +1,45 @@
 import React, {Component} from 'react';
 import TodoItem from './comps/TodoItem'
 //import AddItem from './comps/AddItem'
-//import todosData from "./comps/ToDos"
+import todosData from "./comps/todosData"
 import './App.css';
 
 /////////////// This is going to be a to-do list that allows you to check and un-check items that are on the list.
 
 class App extends Component {
 
-  state = {
-    ID_Count: 1,
-    todos: []
+  constructor(props) {
+    super(props)
+    this.state = {
+      importedToDos: todosData
+    }
   }
 
-  addItem = () => {
-
-    const userInput = document.querySelector(".userInput").value
-
+  handleChange = (id) => {
     this.setState(previousState => {
+      const updatedTodos = previousState.importedToDos.map(toDoItem => {
+        if (toDoItem.id === id) {
+          toDoItem.completed = !toDoItem.completed
+        }
+
+        return toDoItem
+
+      })
+
       return {
-        ID_Count: previousState.ID_Count + 1,
-        todos: [...previousState.todos, {id: previousState.ID_Count, text: userInput}]
+        importedToDos: updatedTodos
       }
+
     })
   }
 
+
   render() {
 
-    const todoItems = this.state.todos.map(item => <TodoItem id={item.id} text={item.text} />)
+    const todoItems = this.state.importedToDos.map(toDoItem => <TodoItem key={toDoItem.id} item={toDoItem} handleChange={this.handleChange}/>)
 
     return (
       <div className="bounceInUp">
-        <h3>Add an Item to your to-do list:</h3>
-        <input type="text" className="userInput"/>
-        <br></br>
-        <button className="buttonStyle" onClick={this.addItem}>Click To Add</button>
         <h3>{todoItems}</h3>
       </div>
     )
